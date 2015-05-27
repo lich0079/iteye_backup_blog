@@ -11,14 +11,15 @@ public class FileUtil {
 	public static void writeToFile(String title, String content){
         try {
         	String path = FileUtil.class .getResource("/").getPath()+title+".html";
+        	System.out.println("write to "+path);
         	Writer out = new BufferedWriter(new OutputStreamWriter(
         		    new FileOutputStream(path), "UTF-8"));
-        	
         	out.write(content);
         	out.close();
-        	System.out.println("write to "+path);
+        	
         } catch (IOException ioe) {
             ioe.printStackTrace();
+            System.out.println(title+" "+content);
         }
 	}
 	

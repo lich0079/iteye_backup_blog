@@ -34,8 +34,9 @@ public class App {
 		
 		getAllBlogURLs(maxPage);
 		
+		System.out.println("blog count:"+blogURLs.size());
 		for (String string : blogURLs) {
-			Thread.sleep(10000);
+			Thread.sleep(10000);//prevent iteye blog your ip
 			saveArticle(string);
 		}
 		System.out.println(blogURLs.size());
@@ -49,7 +50,7 @@ public class App {
 			pools.execute(new Runnable() {
 				public void run() {
 					try {
-						Thread.sleep(10000);
+						Thread.sleep(10000);//prevent iteye blog your ip
 						Document doc = Jsoup.parse(HttpUtil.getHtmlString(pageURL));
 						Elements newsHeadlines = doc.select("h3 a");
 						for (Element element : newsHeadlines) {

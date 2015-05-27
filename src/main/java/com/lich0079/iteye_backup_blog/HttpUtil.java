@@ -15,11 +15,12 @@ public class HttpUtil {
 
 	public static String getHtmlString(String url) throws ClientProtocolException, IOException{
 		HttpClient httpclient = new DefaultHttpClient();
-        HttpHost proxy = new HttpHost("161.92.51.225", 8080, "http");
-
-        httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
-        HttpGet request = new HttpGet(url);
 		
+		//if you under a proxy
+        HttpHost proxy = new HttpHost("161.92.51.225", 8080, "http");
+        httpclient.getParams().setParameter(ConnRoutePNames.DEFAULT_PROXY, proxy);
+        
+        HttpGet request = new HttpGet(url);
 		HttpResponse res = httpclient.execute( request);
 		return EntityUtils.toString(res.getEntity(),"UTF-8");
 	}
