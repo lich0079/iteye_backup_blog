@@ -2,6 +2,7 @@ package com.lich0079.iteye_backup_blog;
 
 import java.io.IOException;
 import java.util.HashSet;
+import java.util.Random;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.ExecutorService;
@@ -36,35 +37,40 @@ public class App {
 		
 		System.out.println("blog count:"+blogURLs.size());
 		for (String string : blogURLs) {
-			Thread.sleep(50000);//prevent iteye blog your ip
 			saveArticle(string);
 		}
 		System.out.println(blogURLs.size());
 		pools.shutdown();
 	}
 
-	private static void getAllBlogURLs(int maxPage) throws InterruptedException {
-		final CountDownLatch countDown = new CountDownLatch(maxPage);
+	private static void getAllBlogURLs(int maxPage) throws InterruptedException, ClientProtocolException, IOException {
+//		final CountDownLatch countDown = new CountDownLatch(maxPage);
 		for (int i = 1; i <= maxPage; i++) {
 			final String pageURL = base_url+"/?page="+i;
-			pools.execute(new Runnable() {
-				public void run() {
-					try {
-						Thread.sleep(50000);//prevent iteye blog your ip
-						Document doc = Jsoup.parse(HttpUtil.getHtmlString(pageURL));
-						Elements newsHeadlines = doc.select("h3 a");
-						for (Element element : newsHeadlines) {
-							blogURLs.add(base_url+element.attr("href"));
-						}
-					} catch (Throwable e) {
-						e.printStackTrace();
-					}finally{
-						countDown.countDown();
-					}
-				}
-			});
+//			pools.execute(new Runnable() {
+//				public void run() {
+//					try {
+//						Thread.sleep(50000);//prevent iteye blog your ip
+//						Document doc = Jsoup.parse(HttpUtil.getHtmlString(pageURL));
+//						Elements newsHeadlines = doc.select("h3 a");
+//						for (Element element : newsHeadlines) {
+//							blogURLs.add(base_url+element.attr("href"));
+//						}
+//					} catch (Throwable e) {
+//						e.printStackTrace();
+//					}finally{
+//						countDown.countDown();
+//					}111111
+//				}
+//			});
+			Thread.sleep(50000);//prevent iteye blog your ip
+			Document doc = Jsoup.parse(HttpUtil.getHtmlString(pageURL));
+			Elements newsHeadlines = doc.select("h3 a");
+			for (Element element : newsHeadlines) {
+				blogURLs.add(base_url+element.attr("href"));
+			}
 		}
-		countDown.await();
+//		countDown.await();
 	}
 	
 	public static int getMaxPage(Document doc){
@@ -80,10 +86,18 @@ public class App {
 		return max;
 	}
 	
-	private static void saveArticle(String url) throws ClientProtocolException, IOException{
+	private static void saveArticle(String url) throws ClientProtocolException, IOException, InterruptedException{
+		Thread.sleep(100000 + new Random(System.currentTimeMillis()).nextInt(10000));//prevent iteye blog your ip
 		Document doc = Jsoup.parse(HttpUtil.getHtmlString(url));
 		Elements title = doc.select(".blog_title h3 a"); 
 		Elements content = doc.select("#blog_content");
-		FileUtil.writeToFile(title.text(), content.html());
+		String filename = title.text();
+		try {
+			FileUtil.writeToFile(filename, content.html());
+		} catch (Exception e) {
+			filename = url.replace(base_url+"/blog/", "");
+			FileUtil.writeToFile(filename, content.html());
+		}
+//		System.out.println(url);
 	}
 }

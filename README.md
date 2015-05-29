@@ -1,6 +1,6 @@
 # iteye_backup_blog
 
-A simple iteye blog backup application
+A simple iteye.com+9-5 blog backup application
 
 remember to change base_url to your blog address in App.java
 
