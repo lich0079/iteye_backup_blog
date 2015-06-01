@@ -45,7 +45,7 @@ public class App {
 
 	private static void getAllBlogURLs(int maxPage) throws InterruptedException, ClientProtocolException, IOException {
 //		final CountDownLatch countDown = new CountDownLatch(maxPage);
-		for (int i = 1; i <= maxPage; i++) {
+		for (int i = 29; i <= 30; i++) {
 			final String pageURL = base_url+"/?page="+i;
 //			pools.execute(new Runnable() {
 //				public void run() {
@@ -63,7 +63,7 @@ public class App {
 //					}111111
 //				}
 //			});
-			Thread.sleep(50000);//prevent iteye blog your ip
+			Thread.sleep(5000);//prevent iteye blog your ip
 			Document doc = Jsoup.parse(HttpUtil.getHtmlString(pageURL));
 			Elements newsHeadlines = doc.select("h3 a");
 			for (Element element : newsHeadlines) {
@@ -87,14 +87,15 @@ public class App {
 	}
 	
 	private static void saveArticle(String url) throws ClientProtocolException, IOException, InterruptedException{
-		Thread.sleep(100000 + new Random(System.currentTimeMillis()).nextInt(10000));//prevent iteye blog your ip
+		Thread.sleep(3000 + new Random(System.currentTimeMillis()).nextInt(10000));//prevent iteye blog your ip
 		Document doc = Jsoup.parse(HttpUtil.getHtmlString(url));
 		Elements title = doc.select(".blog_title h3 a"); 
 		Elements content = doc.select("#blog_content");
 		String filename = title.text();
 		try {
 			FileUtil.writeToFile(filename, content.html());
-		} catch (Exception e) {
+		} catch (Throwable e) {
+			e.printStackTrace();
 			filename = url.replace(base_url+"/blog/", "");
 			FileUtil.writeToFile(filename, content.html());
 		}
